@@ -35,14 +35,14 @@ $ssm_command = @"
 }
 "@
 
-Set-Content -Path "./test.json" -Value $ssm_command
+Set-Content -Path "$HOME/.ssh/command.json" -Value $ssm_command
 
 Write-Host "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 24 hours"
 aws ssm send-command `
   --instance-ids "${ec2_instance_id}" `
   --document-name 'AWS-RunShellScript' `
   --comment "Add an SSH public key to authorized_keys for 24 hours" `
-  --cli-input-json file://test.json
+  --cli-input-json file://$HOME/.ssh/command.json
 
 Write-Host "Start ssm session to instance ${ec2_instance_id}"
 aws ssm start-session `
