@@ -15,6 +15,8 @@ host i-* mi-*
 
 ## Usage
 
+Run `ssh-keygen` the very first time if there is no `id_rsa` in your `$HOME/.ssh`
+
 ### Using SSH
 
 1. Get the credentials from AWS using `aws configure SSO` command. Note down the profile at the very end.

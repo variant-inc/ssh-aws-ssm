@@ -44,6 +44,8 @@ aws ssm send-command `
   --comment "Add an SSH public key to authorized_keys for 24 hours" `
   --cli-input-json file://$HOME/.ssh/command.json
 
+Remove-Item "$HOME/.ssh/command.json"
+
 Write-Host "Start ssm session to instance ${ec2_instance_id}"
 aws ssm start-session `
   --target "${ec2_instance_id}" `
