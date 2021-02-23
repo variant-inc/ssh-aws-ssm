@@ -2,8 +2,6 @@
 # Open SSH Connection
 #   ssh <INSTANCE_USER>@<INSTANCE_ID>:<AWS_PROFILE>
 ################################################################################
-$ErrorActionPreference = "stop"
-
 $AWS_PROFILE_SEPARATOR = ':'
 
 $ec2_instance_id = "$($args[0])"

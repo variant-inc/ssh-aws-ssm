@@ -3,7 +3,7 @@
 # Open SSH Connection
 #   ssh <INSTANCE_USER>@<INSTANCE_ID>:<AWS_PROFILE>
 ################################################################################
-set -eu
+set -u
 
 AWS_PROFILE_SEPARATOR=':'
 
