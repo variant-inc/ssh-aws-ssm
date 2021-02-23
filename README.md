@@ -29,7 +29,7 @@ host i-* mi-*
 
   ```text
   host <instance:id>:<aws-profile>
-    User <user>
+  User <user>
   ```
 
   For example:
