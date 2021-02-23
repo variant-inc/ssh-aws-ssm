@@ -53,9 +53,15 @@ catch
   session-manager-plugin
 }
 
-New-Item -ItemType Directory -Force -Path "$HOME/.ssh/config"
+New-Item -ItemType Directory -Force -Path "$HOME/.ssh"
 Copy-Item aws-ssm-ec2-proxy-command.sh "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1"
 chmod +x "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1"
+
+if (!(Test-Path "$HOME/.ssh/config"))
+{
+  New-Item -Path $HOME/.ssh/config
+  Write-Host "Created new file $HOME/.ssh/config"
+}
 
 if (! $(Get-Content "$HOME/.ssh/config") -match "host i-* mi-*")
 {
@@ -75,4 +81,6 @@ host i-* mi-*
   StrictHostKeyChecking no
 "@
   Add-Content -Path "$HOME/.ssh/config" -Value $text
+  Write-Host "Added ssh config"
 }
+Write-Host "Use command: ssh user@instance-id:aws-profile"

@@ -33,11 +33,11 @@ if ! command -v session-manager-plugin &>/dev/null; then
   session-manager-plugin
 fi
 
-mkdir -p "$HOME/.ssh/config" || true
+mkdir -p "$HOME/.ssh"
 cp aws-ssm-ec2-proxy-command.sh "$HOME/.ssh/aws-ssm-ec2-proxy-command.sh"
 chmod +x "$HOME/.ssh/aws-ssm-ec2-proxy-command.sh"
 
-if [[ $(grep -q 'host i-* mi-*' "$HOME/.ssh/config") != 0 ]]; then
+if [[ $(grep -q 'host i-*' "$HOME/.ssh/config") != 0 ]]; then
   cat <<EOF >>~/.ssh/config
 host i-* mi-*
   IdentityFile ~/.ssh/id_rsa
