@@ -5,7 +5,7 @@
 ################################################################################
 set -eu
 
-AWS_PROFILE_SEPARATOR='::'
+AWS_PROFILE_SEPARATOR=':'
 
 ec2_instance_id="$1"
 ssh_user="$2"
