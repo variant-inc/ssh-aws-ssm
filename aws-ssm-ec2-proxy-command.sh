@@ -18,11 +18,11 @@ if echo "${ec2_instance_id}" | grep -qe "${AWS_PROFILE_SEPARATOR}"; then
   ec2_instance_id="${ec2_instance_id%%${AWS_PROFILE_SEPARATOR}*}"
 fi
 
-echo >/dev/stderr "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 60 seconds"
+echo >/dev/stderr "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 24 hours"
 aws ssm send-command \
   --instance-ids "${ec2_instance_id}" \
   --document-name 'AWS-RunShellScript' \
-  --comment "Add an SSH public key to authorized_keys for 60 seconds" \
+  --comment "Add an SSH public key to authorized_keys for 24 hours" \
   --parameters commands="\"
     mkdir -p ~${ssh_user}/.ssh
     cd ~${ssh_user}/.ssh || exit 1
