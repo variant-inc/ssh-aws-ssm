@@ -2,6 +2,30 @@
 # Open SSH Connection
 #   ssh <INSTANCE_USER>@<INSTANCE_ID>:<AWS_PROFILE>
 ################################################################################
+$ErrorActionPreference = "Stop"
+$InformationPreference = "Continue"
+$WarningPreference = "SilentlyContinue"
+
+Trap
+{
+  Write-Error $_ -ErrorAction Continue
+  exit 1
+}
+function CommandAliasFunction
+{
+  Write-Information ""
+  Write-Information "$args"
+  $cmd, $args = $args
+  & "$cmd" $args
+  if ($LASTEXITCODE)
+  {
+    throw "Exception Occured"
+  }
+  Write-Information ""
+}
+
+Set-Alias -Name ce -Value CommandAliasFunction -Scope script
+
 $AWS_PROFILE_SEPARATOR = ':'
 
 $ec2_instance_id = "$($args[0])"
@@ -45,7 +69,7 @@ aws ssm send-command `
 Remove-Item "$HOME/.ssh/command.json"
 
 Write-Host "Start ssm session to instance ${ec2_instance_id}"
-aws ssm start-session `
+ce aws ssm start-session `
   --target "${ec2_instance_id}" `
   --document-name 'AWS-StartSSHSession' `
   --parameters "portNumber=${ssh_port}"

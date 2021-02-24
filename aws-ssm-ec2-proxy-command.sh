@@ -3,7 +3,7 @@
 # Open SSH Connection
 #   ssh <INSTANCE_USER>@<INSTANCE_ID>:<AWS_PROFILE>
 ################################################################################
-set -u
+set -exu
 
 AWS_PROFILE_SEPARATOR=':'
 
@@ -31,7 +31,7 @@ aws ssm send-command \
     sleep 24h
     grep -v -F \\\"\${authorized_key}\\\" authorized_keys > .authorized_keys
     mv .authorized_keys authorized_keys
-  \""
+  \"" || true
 
 echo >/dev/stderr "Start ssm session to instance ${ec2_instance_id}"
 aws ssm start-session \
