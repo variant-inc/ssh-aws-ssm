@@ -8,7 +8,9 @@ catch
 {
   if ($PSVersionTable.OS -match "Windows")
   {
+    Write-Host "Install awscli by following the isntructions in the newly opened browser window and retry ./install.ps1"
     Start-Process "https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html"
+    exit
   }
   elseif ($PSVersionTable.OS -match "Linux")
   {
@@ -36,7 +38,9 @@ catch
 {
   if ($PSVersionTable.OS -match "Windows" -or ([string]::IsNullorEmpty($PSVersionTable.OS)))
   {
+    Write-Host "Install session-manager-plugin by following the isntructions in the newly opened browser window and retry ./install.ps1"
     Start-Process "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-windows"
+    exit
   }
   elseif ($PSVersionTable.OS -match "Linux")
   {
