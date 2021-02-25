@@ -34,7 +34,7 @@ try
 }
 catch
 {
-  if ($PSVersionTable.OS -match "Windows")
+  if ($PSVersionTable.OS -match "Windows" -or ([string]::IsNullorEmpty($PSVersionTable.OS)))
   {
     Start-Process "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-windows"
   }
@@ -67,7 +67,7 @@ if (!(Test-Path "$HOME/.ssh/config"))
 
 if (! $(Get-Content "$HOME/.ssh/config") -match "host i-* mi-*")
 {
-  if ($PSVersionTable.OS -match "Windows")
+  if ($PSVersionTable.OS -match "Windows" -or ([string]::IsNullorEmpty($PSVersionTable.OS)))
   {
     $pwsh = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
   }
