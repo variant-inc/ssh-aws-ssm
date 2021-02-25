@@ -24,13 +24,13 @@ aws ssm send-command \
   --document-name 'AWS-RunShellScript' \
   --comment "Add an SSH public key to authorized_keys for 24 hours" \
   --parameters commands="\"
-    mkdir -p ~${ssh_user}/.ssh
-    cd ~${ssh_user}/.ssh || exit 1
+    set -ex
+    cd /home/${ssh_user}/.ssh || exit 1
+    touch authorized_keys
     authorized_key='${ssh_public_key} ssm-session'
-    echo \\\"\${authorized_key}\\\" >> authorized_keys
-    sleep 24h
-    grep -v -F \\\"\${authorized_key}\\\" authorized_keys > .authorized_keys
-    mv .authorized_keys authorized_keys
+    grep -v -F \\\"\${authorized_key}\\\" authorized_keys > .authorized_keys || true
+    mv .authorized_keys authorized_keys || true
+    printf '%s' \\\"\${authorized_key}\\\" >> authorized_keys
   \"" || true
 
 echo >/dev/stderr "Start ssm session to instance ${ec2_instance_id}"

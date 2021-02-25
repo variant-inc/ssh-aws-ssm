@@ -40,19 +40,23 @@ if ($ec2_instance_id -match $AWS_PROFILE_SEPARATOR)
   $ec2_instance_id = $ec2_instance_id.Split($AWS_PROFILE_SEPARATOR)[0]
 }
 
+Write-Host ${ssh_public_key}
+
+$commands = @"
+set -ex
+cd /home/${ssh_user}/.ssh || exit 1
+touch authorized_keys
+authorized_key='${ssh_public_key} ssm-session'
+grep -v -F \"`$authorized_key\" authorized_keys > .authorized_keys || true
+mv .authorized_keys authorized_keys || true
+printf '%s' \"`$authorized_key\" >> authorized_keys
+"@.replace("`n", "\n")
+
 
 $ssm_command = @"
 {
   "Parameters": {
-    "commands": [
-      "mkdir -p /home/${ssh_user}/.ssh",
-      "cd /home/${ssh_user}/.ssh || exit 1",
-      "authorized_key='${ssh_public_key} ssm-session'",
-      "echo `$authorized_key >> authorized_keys",
-      "sleep 24h",
-      "grep -v -F `$authorized_key authorized_keys > .authorized_keys",
-      "mv .authorized_keys authorized_keys"
-    ]
+    "commands": ["$commands"]
   }
 }
 "@
@@ -64,9 +68,11 @@ aws ssm send-command `
   --instance-ids "${ec2_instance_id}" `
   --document-name 'AWS-RunShellScript' `
   --comment "Add an SSH public key to authorized_keys for 24 hours" `
-  --cli-input-json file://$HOME/.ssh/command.json
+  --cli-input-json file://$HOME/.ssh/command.json `
+  --max-errors 1 `
+  --cloud-watch-output-config CloudWatchOutputEnabled=true
 
-Remove-Item "$HOME/.ssh/command.json"
+# Remove-Item "$HOME/.ssh/command.json"
 
 Write-Host "Start ssm session to instance ${ec2_instance_id}"
 ce aws ssm start-session `
