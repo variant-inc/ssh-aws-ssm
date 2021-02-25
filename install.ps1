@@ -60,7 +60,7 @@ catch
 }
 
 New-Item -ItemType Directory -Force -Path "$HOME/.ssh"
-Copy-Item aws-ssm-ec2-proxy-command.sh "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1"
+Copy-Item aws-ssm-ec2-proxy-command.ps1 "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1"
 
 if (!(Test-Path "$HOME/.ssh/config"))
 {
