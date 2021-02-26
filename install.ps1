@@ -6,12 +6,6 @@ try
 }
 catch
 {
-  if ($PSVersionTable.OS -match "Windows")
-  {
-    Write-Host "Install awscli by following the isntructions in the newly opened browser window and retry ./install.ps1"
-    Start-Process "https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html"
-    exit
-  }
   elseif ($PSVersionTable.OS -match "Linux")
   {
     Invoke-WebRequest "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -28,6 +22,12 @@ catch
     Remove-Item AWSCLIV2.pkg
     aws --version
   }
+  else
+  {
+    Write-Host "Install awscli by following the isntructions in the newly opened browser window and retry ./install.ps1"
+    Start-Process "https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html"
+    exit
+  }
 }
 
 try
@@ -36,13 +36,7 @@ try
 }
 catch
 {
-  if ($PSVersionTable.OS -match "Windows" -or ([string]::IsNullorEmpty($PSVersionTable.OS)))
-  {
-    Write-Host "Install session-manager-plugin by following the isntructions in the newly opened browser window and retry ./install.ps1"
-    Start-Process "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-windows"
-    exit
-  }
-  elseif ($PSVersionTable.OS -match "Linux")
+  if ($PSVersionTable.OS -match "Linux")
   {
     Invoke-WebRequest "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
     sudo dpkg -i session-manager-plugin.deb
@@ -57,6 +51,12 @@ catch
     Remove-Item sessionmanager-bundle.zip
     session-manager-plugin
   }
+  else
+  {
+    Write-Host "Install session-manager-plugin by following the isntructions in the newly opened browser window and retry ./install.ps1"
+    Start-Process "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-windows"
+    exit
+  }
 }
 
 New-Item -ItemType Directory -Force -Path "$HOME/.ssh"
@@ -68,25 +68,36 @@ if (!(Test-Path "$HOME/.ssh/config"))
   Write-Host "Created new file $HOME/.ssh/config"
 }
 
-if (! $(Get-Content "$HOME/.ssh/config") -match "host i-* mi-*")
+$SEL = Select-String -Path "$HOME/.ssh/config" "host i-\* mi-\*"
+
+if ($null -eq $SEL)
 {
-  if ($PSVersionTable.OS -match "Windows" -or ([string]::IsNullorEmpty($PSVersionTable.OS)))
-  {
-    $pwsh = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-  }
-  elseif ($PSVersionTable.OS -match "Linux" -or $PSVersionTable.OS -match "Darwin")
+  if ($PSVersionTable.OS -match "Linux" -or $PSVersionTable.OS -match "Darwin")
   {
     chmod +x "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1"
     $pwsh = $(which pwsh)
-  }
-  $text = @"
+    $text = @"
+
 
 host i-* mi-*
   IdentityFile $HOME/.ssh/id_rsa
   ProxyCommand $pwsh "$HOME/.ssh/aws-ssm-ec2-proxy-command.ps1 %h %r %p $HOME/.ssh/id_rsa.pub"
   StrictHostKeyChecking no
 "@
-  Add-Content -Path "$HOME/.ssh/config" -Value $text
+  }
+  else
+  {
+    $pwsh = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    $text = @"
+
+
+host i-* mi-*
+  IdentityFile $HOME\.ssh\id_rsa
+  ProxyCommand $pwsh "$HOME\.ssh\aws-ssm-ec2-proxy-command.ps1 %h %r %p $HOME\.ssh\id_rsa.pub"
+  StrictHostKeyChecking no
+"@
+  }
+  Add-Content -Path "$HOME\.ssh\config" -Value $text
   Write-Host "Added ssh config"
 }
 Write-Host "Use command: ssh user@instance-id:aws-profile"
