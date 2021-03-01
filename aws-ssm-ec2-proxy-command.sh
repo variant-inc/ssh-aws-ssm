@@ -18,6 +18,8 @@ if echo "${ec2_instance_id}" | grep -qe "${AWS_PROFILE_SEPARATOR}"; then
   ec2_instance_id="${ec2_instance_id%%${AWS_PROFILE_SEPARATOR}*}"
 fi
 
+aws sts get-caller-identity || aws sso login --profile "$AWS_PROFILE"
+
 echo >/dev/stderr "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 24 hours"
 aws ssm send-command \
   --instance-ids "${ec2_instance_id}" \

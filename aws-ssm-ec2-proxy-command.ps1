@@ -63,6 +63,15 @@ $ssm_command = @"
 
 Set-Content -Path "$HOME/.ssh/command.json" -Value $ssm_command
 
+try
+{
+  ce aws sts get-caller-identity
+}
+catch
+{
+  ce aws sso login --profile $env:AWS_PROFILE
+}
+
 Write-Host "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 24 hours"
 aws ssm send-command `
   --instance-ids "${ec2_instance_id}" `
