@@ -26,7 +26,7 @@ function CommandAliasFunction
 
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
-$AWS_PROFILE_SEPARATOR = ':'
+$AWS_PROFILE_SEPARATOR = '__'
 
 $ec2_instance_id = "$($args[0])"
 $ssh_user = "$($args[1])"

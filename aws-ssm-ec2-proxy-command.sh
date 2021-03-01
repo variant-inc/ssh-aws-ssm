@@ -5,7 +5,7 @@
 ################################################################################
 set -exu
 
-AWS_PROFILE_SEPARATOR=':'
+AWS_PROFILE_SEPARATOR='__'
 
 ec2_instance_id="$1"
 ssh_user="$2"

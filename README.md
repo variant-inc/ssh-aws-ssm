@@ -21,9 +21,9 @@ Run `ssh-keygen` the very first time if there is no `id_rsa` in your `$HOME/.ssh
 
 1. Get the credentials from AWS using `aws configure SSO` command. Note down the profile at the very end.
 2. Run SSH in terminal using the following syntax \
-    `ssh <user>@<instance:id>:<aws-profile>` \
+    `ssh <user>@<instance-id>__<aws-profile>` \
   For example: \
-    `ssh ubuntu@i-12312hbu1:AWSAdministrator-423213`
+    `ssh ubuntu@i-12312hbu1__AWSAdministrator-423213`
 
 ### Using VSCode
 
@@ -37,7 +37,7 @@ Run `ssh-keygen` the very first time if there is no `id_rsa` in your `$HOME/.ssh
   For example:
 
   ```text
-  host i-083d48d20995d057c:AWSAdministratorAccess-663374859601
+  host i-083d48d20995d057c__AWSAdministratorAccess-663374859601
   User ubuntu
   ```
 
