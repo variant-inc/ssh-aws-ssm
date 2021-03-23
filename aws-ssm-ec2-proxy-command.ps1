@@ -27,6 +27,7 @@ function CommandAliasFunction
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 $AWS_PROFILE_SEPARATOR = '__'
+$aws_profile = "default"
 
 $ec2_instance_id = "$($args[0])"
 $ssh_user = "$($args[1])"
@@ -36,8 +37,8 @@ $ssh_public_key = "$(Get-Content "${ssh_public_key_path}")" -replace '\\', '\\'
 
 if ($ec2_instance_id -match $AWS_PROFILE_SEPARATOR)
 {
-  $env:AWS_PROFILE = $ec2_instance_id.Split($AWS_PROFILE_SEPARATOR)[1]
-  $ec2_instance_id = $ec2_instance_id.Split($AWS_PROFILE_SEPARATOR)[0]
+  $aws_profile = ($ec2_instance_id -Split $AWS_PROFILE_SEPARATOR)[1]
+  $ec2_instance_id = ($ec2_instance_id -Split $AWS_PROFILE_SEPARATOR)[0]
 }
 
 Write-Host ${ssh_public_key}
@@ -50,7 +51,7 @@ authorized_key='${ssh_public_key} ssm-session'
 grep -v -F \"`$authorized_key\" authorized_keys > .authorized_keys || true
 mv .authorized_keys authorized_keys || true
 printf '%s' \"`$authorized_key\" >> authorized_keys
-"@.replace("`n", "\n")
+"@.replace("`r`n", ";")
 
 
 $ssm_command = @"
@@ -79,7 +80,8 @@ aws ssm send-command `
   --comment "Add an SSH public key to authorized_keys for 24 hours" `
   --cli-input-json file://$HOME/.ssh/command.json `
   --max-errors 1 `
-  --cloud-watch-output-config CloudWatchOutputEnabled=true
+  --cloud-watch-output-config CloudWatchOutputEnabled=true `
+  --profile $aws_profile
 
 # Remove-Item "$HOME/.ssh/command.json"
 
@@ -87,4 +89,5 @@ Write-Host "Start ssm session to instance ${ec2_instance_id}"
 ce aws ssm start-session `
   --target "${ec2_instance_id}" `
   --document-name 'AWS-StartSSHSession' `
-  --parameters "portNumber=${ssh_port}"
+  --parameters "portNumber=${ssh_port}" `
+  --profile $aws_profile
