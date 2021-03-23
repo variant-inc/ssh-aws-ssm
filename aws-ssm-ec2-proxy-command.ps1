@@ -66,11 +66,11 @@ Set-Content -Path "$HOME/.ssh/command.json" -Value $ssm_command
 
 try
 {
-  ce aws sts get-caller-identity
+  ce aws sts get-caller-identity --profile $aws_profile
 }
 catch
 {
-  ce aws sso login --profile $env:AWS_PROFILE
+  ce aws sso login --profile $aws_profile
 }
 
 Write-Host "Add public key ${ssh_public_key_path} to instance ${ec2_instance_id} for 24 hours"

@@ -37,7 +37,7 @@ mkdir -p "$HOME/.ssh"
 cp aws-ssm-ec2-proxy-command.sh "$HOME/.ssh/aws-ssm-ec2-proxy-command.sh"
 chmod +x "$HOME/.ssh/aws-ssm-ec2-proxy-command.sh"
 
-if [[ $(grep -q 'host i-*' "$HOME/.ssh/config") != 0 ]]; then
+if [[ -n $(grep -q 'host i-*' "$HOME/.ssh/config") ]]; then
   cat <<EOF >>~/.ssh/config
 host i-* mi-*
   IdentityFile ~/.ssh/id_rsa

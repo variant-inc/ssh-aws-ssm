@@ -30,7 +30,7 @@ Run `ssh-keygen` the very first time if there is no `id_rsa` in your `$HOME/.ssh
 1. Add a host to `$HOME/.ssh/config` with the following syntax
 
   ```text
-  host <instance:id>:<aws-profile>
+  host <instance:id>__<aws-profile>
   User <user>
   ```
 
